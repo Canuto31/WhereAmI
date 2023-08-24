@@ -13,5 +13,8 @@ UCLASS()
 class WHEREAMI_API AWhereAmIGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+
+public:
+	AWhereAmIGameModeBase();
 	
 };
