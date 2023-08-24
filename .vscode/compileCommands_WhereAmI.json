@@ -1,5 +1,21 @@
 [
 	{
+		"file": "D:\\Projects\\Unreal\\WhereAmI\\Source\\WhereAmI\\MyCharacter.cpp",
+		"arguments": [
+			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe",
+			"@D:\\Projects\\Unreal\\WhereAmI\\.vscode\\compileCommands_WhereAmI\\WhereAmI.255.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.1\\Engine\\Source"
+	},
+	{
+		"file": "D:\\Projects\\Unreal\\WhereAmI\\Source\\WhereAmI\\MyCharacter.h",
+		"arguments": [
+			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe",
+			"@D:\\Projects\\Unreal\\WhereAmI\\.vscode\\compileCommands_WhereAmI\\WhereAmI.255.rsp"
+		],
+		"directory": "C:\\Program Files\\Epic Games\\UE_5.1\\Engine\\Source"
+	},
+	{
 		"file": "D:\\Projects\\Unreal\\WhereAmI\\Source\\WhereAmI\\WhereAmI.Build.cs",
 		"arguments": [
 			"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\cl.exe",
