@@ -57,11 +57,18 @@ void APlayerCharacter::BeginPlay()
 
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
+	const float CurrentValue = Value.Get<float>();
+	if (Controller && CurrentValue != 0.f)
+	{
+		FVector Forward = GetActorForwardVector();
+		AddMovementInput(Forward, CurrentValue);
+	}
+	/*//Bool Example
 	const bool CurrentValue = Value.Get<bool>();
 	if (CurrentValue)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("IA_Move Triggered"))
-	}
+	}*/
 }
 
 // Called every frame

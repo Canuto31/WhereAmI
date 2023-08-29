@@ -22,7 +22,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	void moveForward(float value);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input)
 	UInputMappingContext* PlayerMappingContext;
