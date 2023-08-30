@@ -28,8 +28,13 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input)
 	UInputAction* MoveAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input)
+	UInputAction* RotateAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input)
+	float RotationSpeed;
 
 	void Move(const FInputActionValue& value);
+	void Rotate(const FInputActionValue& Value);
 
 	// UPROPERTY(EditAnywhere, Category = "MoveActor")
 	// float speed;

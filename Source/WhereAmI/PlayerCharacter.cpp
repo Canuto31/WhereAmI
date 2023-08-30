@@ -38,7 +38,8 @@ void APlayerCharacter::BeginPlay()
 	APlayerController* PlayerController = Cast<APlayerController>(Controller);
 	if (PlayerController)
 	{
-		UEnhancedInputLocalPlayerSubsystem* subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+		UEnhancedInputLocalPlayerSubsystem* subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
+			PlayerController->GetLocalPlayer());
 		if (subsystem)
 		{
 			subsystem->AddMappingContext(PlayerMappingContext, 0);
@@ -57,18 +58,31 @@ void APlayerCharacter::BeginPlay()
 
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
+	//Correct code to move
 	const float CurrentValue = Value.Get<float>();
 	if (Controller && CurrentValue != 0.f)
 	{
 		FVector Forward = GetActorForwardVector();
 		AddMovementInput(Forward, CurrentValue);
 	}
+	
 	/*//Bool Example
 	const bool CurrentValue = Value.Get<bool>();
 	if (CurrentValue)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("IA_Move Triggered"))
 	}*/
+}
+
+void APlayerCharacter::Rotate(const FInputActionValue& Value)
+{
+	const float CurrentValue = Value.Get<float>();
+
+	if (Controller && CurrentValue != 0.f)
+	{
+		float AdjustedRotationValue = CurrentValue * RotationSpeed;
+		AddControllerYawInput(AdjustedRotationValue);
+	}
 }
 
 // Called every frame
@@ -152,6 +166,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+		EnhancedInputComponent->BindAction(RotateAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Rotate);
 	}
 }
