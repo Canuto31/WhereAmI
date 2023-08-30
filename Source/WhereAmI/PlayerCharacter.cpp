@@ -13,9 +13,9 @@ APlayerCharacter::APlayerCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	/*bIsMovingForward = false;
+	bIsMovingForward = false;
 	bIsMovingBackward = false;
-	bIsRotatingRight = false;
+	/*bIsRotatingRight = false;
 	bIsRotatingLeft = false;
 	bIsMoving = false;*/
 
@@ -62,8 +62,23 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	const float CurrentValue = Value.Get<float>();
 	if (Controller && CurrentValue != 0.f)
 	{
+		if (CurrentValue > 0.f)
+		{
+			bIsMovingForward = true;
+			bIsMovingBackward = false;
+		}
+		else
+		{
+			bIsMovingBackward = true;
+			bIsMovingForward = false;
+		}
 		FVector Forward = GetActorForwardVector();
 		AddMovementInput(Forward, CurrentValue);
+	}
+	else
+	{
+		bIsMovingBackward = false;
+		bIsMovingForward = false;
 	}
 	
 	/*//Bool Example

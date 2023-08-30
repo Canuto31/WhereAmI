@@ -36,6 +36,11 @@ protected:
 	void Move(const FInputActionValue& value);
 	void Rotate(const FInputActionValue& Value);
 
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsMovingForward;
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsMovingBackward;
+
 	// UPROPERTY(EditAnywhere, Category = "MoveActor")
 	// float speed;
 
