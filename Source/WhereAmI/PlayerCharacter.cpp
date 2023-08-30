@@ -96,6 +96,10 @@ void APlayerCharacter::Rotate(const FInputActionValue& Value)
 	if (Controller && CurrentValue != 0.f)
 	{
 		float AdjustedRotationValue = CurrentValue * RotationSpeed;
+		if (bIsMovingBackward)
+		{
+			AdjustedRotationValue *= -1.0f;
+		}
 		AddControllerYawInput(AdjustedRotationValue);
 	}
 }
