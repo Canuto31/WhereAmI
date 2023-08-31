@@ -31,15 +31,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input)
 	UInputAction* RotateAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input)
+	UInputAction* ShiftPressingAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input)
 	float RotationSpeed;
 
 	void Move(const FInputActionValue& value);
 	void Rotate(const FInputActionValue& Value);
+	void ShiftPressing(const FInputActionValue& Value);
+	void NotShiftPressing(const FInputActionValue& Value);
+	void UpdateMovementSpeed();
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsMovingForward;
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsMovingBackward;
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsShiftPressing;
 
 	// UPROPERTY(EditAnywhere, Category = "MoveActor")
 	// float speed;
@@ -50,6 +57,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+private:
+	float MaxSpeed;
 // private:
 // 	bool bIsMovingForward;
 // 	bool bIsMovingBackward;
