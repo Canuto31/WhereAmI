@@ -1,0 +1,24 @@
+# Archivos de imagen
+*.png lfs
+*.jpg lfs
+*.jpeg lfs
+*.gif lfs
+
+# Archivos de audio
+*.wav lfs
+*.mp3 lfs
+*.ogg lfs
+
+# Archivos de video
+*.mp4 lfs
+*.mov lfs
+*.avi lfs
+
+# Archivos de código fuente
+*.c lfs
+*.cpp lfs
+*.java lfs
+*.js lfs
+*.py lfs
+
+Content/StarterContent/** lfs
