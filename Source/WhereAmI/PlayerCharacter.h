@@ -39,7 +39,9 @@ protected:
 	void Rotate(const FInputActionValue& Value);
 	void ShiftPressing(const FInputActionValue& Value);
 	void NotShiftPressing(const FInputActionValue& Value);
+	void FinishRotate(const FInputActionValue& Value);
 	void UpdateMovementSpeed();
+	void UpdateMovingVariables();
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsMovingForward;
@@ -47,6 +49,8 @@ protected:
 	bool bIsMovingBackward;
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsShiftPressing;
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsRotating;
 
 	// UPROPERTY(EditAnywhere, Category = "MoveActor")
 	// float speed;

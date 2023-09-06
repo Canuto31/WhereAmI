@@ -15,6 +15,7 @@ APlayerCharacter::APlayerCharacter()
 	bIsMovingForward = false;
 	bIsMovingBackward = false;
 	bIsShiftPressing = false;
+	bIsRotating = false;
 	MaxSpeed = 150;
 }
 
@@ -54,11 +55,6 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 		FVector Forward = GetActorForwardVector();
 		AddMovementInput(Forward, CurrentValue);
 	}
-	else
-	{
-		bIsMovingBackward = false;
-		bIsMovingForward = false;
-	}
 	UpdateMovementSpeed();
 }
 
@@ -74,6 +70,7 @@ void APlayerCharacter::Rotate(const FInputActionValue& Value)
 			AdjustedRotationValue *= -1.0f;
 		}
 		AddControllerYawInput(AdjustedRotationValue);
+		bIsRotating = true;
 	}
 }
 
@@ -87,6 +84,11 @@ void APlayerCharacter::NotShiftPressing(const FInputActionValue& Value)
 	bIsShiftPressing = false;
 }
 
+void APlayerCharacter::FinishRotate(const FInputActionValue& Value)
+{
+	bIsRotating = false;
+}
+
 void APlayerCharacter::UpdateMovementSpeed()
 {
 	if (bIsShiftPressing && (GetCharacterMovement()->MaxWalkSpeed != MaxSpeed * 2))
@@ -97,6 +99,12 @@ void APlayerCharacter::UpdateMovementSpeed()
 	{
 		GetCharacterMovement()->MaxWalkSpeed -= 1;
 	}
+}
+
+void APlayerCharacter::UpdateMovingVariables()
+{
+	bIsMovingForward = false;
+	bIsMovingBackward = false;
 }
 
 // Called every frame
@@ -114,7 +122,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &APlayerCharacter::UpdateMovingVariables);
 		EnhancedInputComponent->BindAction(RotateAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Rotate);
+		EnhancedInputComponent->BindAction(RotateAction, ETriggerEvent::Completed, this, &APlayerCharacter::FinishRotate);
 		EnhancedInputComponent->BindAction(ShiftPressingAction, ETriggerEvent::Triggered, this, &APlayerCharacter::ShiftPressing);
 		EnhancedInputComponent->BindAction(ShiftPressingAction, ETriggerEvent::Completed, this, &APlayerCharacter::NotShiftPressing);
 	}
