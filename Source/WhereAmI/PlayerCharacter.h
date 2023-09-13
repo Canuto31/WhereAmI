@@ -33,6 +33,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input)
 	UInputAction* ShiftPressingAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input)
+	UInputAction* PauseAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input)
 	float RotationSpeed;
 
 	void Move(const FInputActionValue& value);
@@ -42,6 +45,7 @@ protected:
 	void FinishRotate(const FInputActionValue& Value);
 	void UpdateMovementSpeed();
 	void UpdateMovingVariables();
+	void TogglePause();
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsMovingForward;
@@ -52,8 +56,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsRotating;
 
-	// UPROPERTY(EditAnywhere, Category = "MoveActor")
-	// float speed;
+	bool bIsPaused;
 
 public:	
 	// Called every frame
@@ -64,13 +67,4 @@ public:
 
 private:
 	float MaxSpeed;
-// private:
-// 	bool bIsMovingForward;
-// 	bool bIsMovingBackward;
-// 	bool bIsRotatingRight;
-// 	bool bIsRotatingLeft;
-
-// public:
-// 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="movement")
-// 	bool bIsMoving;
 };

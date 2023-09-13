@@ -6,6 +6,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -17,6 +18,7 @@ APlayerCharacter::APlayerCharacter()
 	bIsShiftPressing = false;
 	bIsRotating = false;
 	MaxSpeed = 150;
+	bIsPaused = false;
 }
 
 // Called when the game starts or when spawned
@@ -107,6 +109,22 @@ void APlayerCharacter::UpdateMovingVariables()
 	bIsMovingBackward = false;
 }
 
+void APlayerCharacter::TogglePause()
+{
+	if (bIsPaused)
+	{
+		bIsPaused = false;
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+	}
+	else
+	{
+		bIsPaused = true;
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("is paused = %s"), bIsPaused ? TEXT("true") : TEXT("false"));
+}
+
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
@@ -127,5 +145,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(RotateAction, ETriggerEvent::Completed, this, &APlayerCharacter::FinishRotate);
 		EnhancedInputComponent->BindAction(ShiftPressingAction, ETriggerEvent::Triggered, this, &APlayerCharacter::ShiftPressing);
 		EnhancedInputComponent->BindAction(ShiftPressingAction, ETriggerEvent::Completed, this, &APlayerCharacter::NotShiftPressing);
+
+		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &APlayerCharacter::TogglePause);
 	}
 }
