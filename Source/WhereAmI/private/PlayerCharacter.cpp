@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PlayerCharacter.h"
+#include "WhereAmI/public/PlayerCharacter.h"
 #include "Components/InputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
