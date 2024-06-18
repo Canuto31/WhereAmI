@@ -111,16 +111,9 @@ void APlayerCharacter::UpdateMovingVariables()
 
 void APlayerCharacter::TogglePause()
 {
-	if (bIsPaused)
-	{
-		bIsPaused = false;
-		UGameplayStatics::SetGamePaused(GetWorld(), false);
-	}
-	else
-	{
-		bIsPaused = true;
-		UGameplayStatics::SetGamePaused(GetWorld(), true);
-	}
+	bIsPaused = !bIsPaused;
+	
+	UGameplayStatics::SetGamePaused(GetWorld(), bIsPaused);
 
 	UE_LOG(LogTemp, Warning, TEXT("is paused = %s"), bIsPaused ? TEXT("true") : TEXT("false"));
 }
