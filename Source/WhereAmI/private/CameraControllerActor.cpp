@@ -23,7 +23,7 @@ void ACameraControllerActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	const float TimeBetweenCameraChanges = 2.0f;
+	/*const float TimeBetweenCameraChanges = 2.0f;
 	const float SmoothBlendTime = 0.75f;
 
 	TimeToNextCameraChange -= DeltaTime;
@@ -44,6 +44,20 @@ void ACameraControllerActor::Tick(float DeltaTime)
 			{
 				OurPlayer->SetViewTarget(Cameras[0]);
 			}
+		}
+	}*/
+}
+
+void ACameraControllerActor::TriggerCameraChange(int32 CameraIndex)
+{
+	const float SmoothBlendTime = 0.75f;
+	
+	if (CameraIndex >= 0 && CameraIndex < Cameras.Num())
+	{
+		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+		if (PlayerController)
+		{
+			PlayerController->SetViewTargetWithBlend(Cameras[CameraIndex], SmoothBlendTime);
 		}
 	}
 }

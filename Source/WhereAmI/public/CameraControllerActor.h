@@ -28,4 +28,6 @@ public:
 
 	float TimeToNextCameraChange;
 
+	void TriggerCameraChange(int32 CameraIndex);
+
 };
