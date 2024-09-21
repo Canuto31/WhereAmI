@@ -3,13 +3,22 @@
 
 #include "CameraControllerActor.h"
 
-#include "Kismet/GameplayStatics.h"
+#include "Camera/CameraComponent.h"
+#include "Components/BoxComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
 ACameraControllerActor::ACameraControllerActor()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
+
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm->SetupAttachment(RootComponent);
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
+	Camera->SetupAttachment(SpringArm);
+	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
+	BoxCollision->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -22,42 +31,6 @@ void ACameraControllerActor::BeginPlay()
 void ACameraControllerActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	/*const float TimeBetweenCameraChanges = 2.0f;
-	const float SmoothBlendTime = 0.75f;
-
-	TimeToNextCameraChange -= DeltaTime;
-
-	if (TimeToNextCameraChange <= 0.0f)
-	{
-		TimeToNextCameraChange += TimeBetweenCameraChanges;
-
-		APlayerController* OurPlayer = UGameplayStatics::GetPlayerController(this, 0);
-
-		if (OurPlayer)
-		{
-			if (Cameras[1] && (OurPlayer->GetViewTarget() == Cameras[0]))
-			{
-				OurPlayer->SetViewTargetWithBlend(Cameras[1], SmoothBlendTime);
-			}
-			else if (Cameras[0])
-			{
-				OurPlayer->SetViewTarget(Cameras[0]);
-			}
-		}
-	}*/
 }
 
-void ACameraControllerActor::TriggerCameraChange(int32 CameraIndex)
-{
-	const float SmoothBlendTime = 0.75f;
-	
-	if (CameraIndex >= 0 && CameraIndex < Cameras.Num())
-	{
-		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-		if (PlayerController)
-		{
-			PlayerController->SetViewTargetWithBlend(Cameras[CameraIndex], SmoothBlendTime);
-		}
-	}
-}
+
