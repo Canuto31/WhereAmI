@@ -9,6 +9,7 @@
 
 class UInputMappingContext;
 class UInputAction;
+class UInventoryComponent;
 
 UCLASS()
 class WHEREAMI_API APlayerCharacter : public ACharacter
@@ -18,6 +19,8 @@ class WHEREAMI_API APlayerCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
+
+	UInventoryComponent* Inventory;
 
 protected:
 	// Called when the game starts or when spawned

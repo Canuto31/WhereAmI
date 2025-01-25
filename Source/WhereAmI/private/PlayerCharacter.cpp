@@ -6,6 +6,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Items/InventoryComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -19,6 +20,8 @@ APlayerCharacter::APlayerCharacter()
 	bIsRotating = false;
 	MaxSpeed = 150;
 	bIsPaused = false;
+
+	Inventory = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventorySystem"));
 }
 
 // Called when the game starts or when spawned
