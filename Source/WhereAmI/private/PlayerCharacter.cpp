@@ -14,6 +14,7 @@ APlayerCharacter::APlayerCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
 	bIsMovingForward = false;
 	bIsMovingBackward = false;
 	bIsShiftPressing = false;
@@ -22,6 +23,8 @@ APlayerCharacter::APlayerCharacter()
 	bIsPaused = false;
 
 	MaxInventorySlots = 8;
+
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -143,6 +146,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(ShiftPressingAction, ETriggerEvent::Completed, this, &APlayerCharacter::NotShiftPressing);
 
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &APlayerCharacter::TogglePause);
+
+		EnhancedInputComponent->BindAction(PickUpAction, ETriggerEvent::Triggered, this, &APlayerCharacter::TryPickupItem);
 	}
 }
 
@@ -171,4 +176,38 @@ bool APlayerCharacter::AddItemToInventory(AItem* Item)
 	}
 
 	return false;
+}
+
+void APlayerCharacter::PickupItem(AItem* Item)
+{
+	if (Item && InventoryComponent)
+	{
+		if (InventoryComponent->AddItem(Item))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Picked up: %s"), *Item->ItemName.ToString());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Inventory is full!"));
+		}
+	}
+}
+
+void APlayerCharacter::TryPickupItem()
+{
+	FVector Start = GetActorLocation();
+	FVector End = Start + GetActorForwardVector() * 200.0f;
+
+	FHitResult HitResult;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params))
+	{
+		AItem* Item = Cast<AItem>(HitResult.GetActor());
+		if (Item)
+		{
+			PickupItem(Item);
+		}
+	}
 }

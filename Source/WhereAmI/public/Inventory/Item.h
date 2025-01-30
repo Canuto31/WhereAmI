@@ -27,6 +27,9 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Item", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* ItemMesh;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item")
 	EItemType ItemType;
 	

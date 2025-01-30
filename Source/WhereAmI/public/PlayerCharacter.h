@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "Inventory/InventoryComponent.h"
 #include "Inventory/InventoryItem.h"
 #include "PlayerCharacter.generated.h"
 
@@ -35,6 +36,9 @@ protected:
 	UInputAction* ShiftPressingAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input)
 	UInputAction* PauseAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input)
+	UInputAction* PickUpAction;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input)
 	float RotationSpeed;
@@ -65,14 +69,21 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory")
 	int32 MaxInventorySlots;
 
-public:	
-	// Called every frame
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory")
+	UInventoryComponent* InventoryComponent;
+	
 	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
+	
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	bool AddItemToInventory(AItem* Item);
+
+	UFUNCTION(BlueprintCallable, Category="Inventory")
+	void PickupItem(AItem* Item);
+
+	UFUNCTION(BlueprintCallable, Category="Inventory")
+	void TryPickupItem();
 
 private:
 	float MaxSpeed;

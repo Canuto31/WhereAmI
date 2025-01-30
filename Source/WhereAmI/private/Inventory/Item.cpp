@@ -12,6 +12,9 @@ AItem::AItem()
 	ItemName = "DefaultItem";
 	MaxStack = 1;
 	Quantity = 1;
+
+	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMesh"));
+	RootComponent = ItemMesh;
 }
 
 void AItem::BeginPlay()
