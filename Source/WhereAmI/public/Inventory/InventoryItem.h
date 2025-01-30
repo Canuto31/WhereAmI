@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Item.h"
 #include "InventoryItem.generated.h"
 
 USTRUCT(BlueprintType)
@@ -12,17 +13,13 @@ public:
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item")
-	FString ItemName;
+	AItem* ItemReference;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item")
 	int32 Quantity;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item")
-	int32 MaxQuantity;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item")
-	TSubclassOf<class AItem> ItemClass;
 	
 	FInventoryItem();
 	~FInventoryItem();
+
+	FInventoryItem(AItem* ItemReference, int32 Quantity);
 };

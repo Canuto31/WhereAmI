@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "Inventory/InventoryItem.h"
 #include "PlayerCharacter.generated.h"
 
 class UInputMappingContext;
@@ -58,12 +59,20 @@ protected:
 
 	bool bIsPaused;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory")
+	TArray<FInventoryItem> Inventory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory")
+	int32 MaxInventorySlots;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	bool AddItemToInventory(AItem* Item);
 
 private:
 	float MaxSpeed;

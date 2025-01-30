@@ -6,6 +6,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Inventory/Item.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -19,6 +20,8 @@ APlayerCharacter::APlayerCharacter()
 	bIsRotating = false;
 	MaxSpeed = 150;
 	bIsPaused = false;
+
+	MaxInventorySlots = 8;
 }
 
 // Called when the game starts or when spawned
@@ -141,4 +144,31 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &APlayerCharacter::TogglePause);
 	}
+}
+
+bool APlayerCharacter::AddItemToInventory(AItem* Item)
+{
+	if (!Item) return false;
+
+	for (FInventoryItem& InvItem : Inventory)
+	{
+		if (InvItem.ItemReference->ItemName == Item->ItemName)
+		{
+			if (InvItem.Quantity < InvItem.ItemReference->MaxStack)
+			{
+				InvItem.Quantity += Item->Quantity;
+				Item->Destroy();
+				return true;
+			}
+		}
+	}
+
+	if (Inventory.Num() < MaxInventorySlots)
+	{
+		Inventory.Add(FInventoryItem{ Item, Item->Quantity });
+		Item->Destroy();
+		return true;
+	}
+
+	return false;
 }

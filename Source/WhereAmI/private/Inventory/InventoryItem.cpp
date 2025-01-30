@@ -5,12 +5,16 @@
 
 FInventoryItem::FInventoryItem()
 {
-	ItemName = TEXT("DefaultItem");
+	ItemReference = nullptr;
 	Quantity = 1;
-	MaxQuantity = 1;
-	ItemClass = nullptr;
 }
 
 FInventoryItem::~FInventoryItem()
 {
+}
+
+FInventoryItem::FInventoryItem(AItem* ItemReference, int32 Quantity)
+{
+	this->ItemReference = ItemReference;
+	this->Quantity = Quantity;
 }
