@@ -7,6 +7,7 @@
 #include "EnhancedInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Inventory/Item.h"
+#include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -25,6 +26,18 @@ APlayerCharacter::APlayerCharacter()
 	MaxInventorySlots = 8;
 
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
+
+	InteractionCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("InteractionCapsule"));
+	InteractionCapsule->SetupAttachment(RootComponent);
+
+	InteractionCapsule->SetCapsuleHalfHeight(100.0f);
+	InteractionCapsule->SetCapsuleRadius(50.0f);
+
+	InteractionCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	InteractionCapsule->SetCollisionObjectType(ECC_Pawn);
+	InteractionCapsule->SetCollisionResponseToAllChannels(ECR_Ignore);
+	InteractionCapsule->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	InteractionCapsule->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
 }
 
 // Called when the game starts or when spawned
@@ -41,6 +54,8 @@ void APlayerCharacter::BeginPlay()
 		if (subsystem)
 		{
 			subsystem->AddMappingContext(PlayerMappingContext, 0);
+
+			InteractionCapsule->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnInteractionCapsuleOverlap);
 		}
 	}
 }
@@ -129,6 +144,12 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	UpdateMovementSpeed();
+
+	FVector CapsuleLocation = InteractionCapsule->GetComponentLocation();
+	float CapsuleHalfHeight = InteractionCapsule->GetScaledCapsuleHalfHeight();
+	float CapsuleRadius = InteractionCapsule->GetScaledCapsuleRadius();
+
+	DrawDebugCapsule(GetWorld(), CapsuleLocation, CapsuleHalfHeight, CapsuleRadius, FQuat::Identity, FColor::Green, false, 0.1f, 0, 2.0f);
 }
 
 // Called to bind functionality to input
@@ -195,19 +216,50 @@ void APlayerCharacter::PickupItem(AItem* Item)
 
 void APlayerCharacter::TryPickupItem()
 {
-	FVector Start = GetActorLocation();
-	FVector End = Start + GetActorForwardVector() * 200.0f;
+	TArray<FOverlapResult> OverlapResults;
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
 
-	FHitResult HitResult;
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(this);
+	FVector CapsuleLocation = InteractionCapsule->GetComponentLocation();
+	float CapsuleRadius = InteractionCapsule->GetScaledCapsuleRadius();
+	float CapsuleHalfHeight = InteractionCapsule->GetScaledCapsuleHalfHeight();
 
-	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params))
+	bool bHasHit = GetWorld()->OverlapMultiByChannel(
+		OverlapResults,
+		CapsuleLocation,
+		FQuat::Identity,
+		ECC_WorldDynamic,
+		FCollisionShape::MakeCapsule(CapsuleRadius, CapsuleHalfHeight),
+		QueryParams
+	);
+
+	if (bHasHit)
 	{
-		AItem* Item = Cast<AItem>(HitResult.GetActor());
-		if (Item)
+		for (const FOverlapResult& Result : OverlapResults)
 		{
-			PickupItem(Item);
+			AItem* Item = Cast<AItem>(Result.GetActor());
+			if (Item)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Recogiendo: %s"), *Item->GetName());
+				PickupItem(Item);
+				return;
+			}
 		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No hay objetos en el área de interacción."));
+	}
+}
+
+void APlayerCharacter::OnInteractionCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	AItem* Item = Cast<AItem>(OtherActor);
+	if (Item)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Detectado: %s"), *Item->GetName());
+
+		Item->Use(this);
 	}
 }

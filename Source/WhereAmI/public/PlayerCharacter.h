@@ -7,6 +7,7 @@
 #include "InputActionValue.h"
 #include "Inventory/InventoryComponent.h"
 #include "Inventory/InventoryItem.h"
+#include "Components/CapsuleComponent.h"
 #include "PlayerCharacter.generated.h"
 
 class UInputMappingContext;
@@ -69,6 +70,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory")
 	int32 MaxInventorySlots;
 
+	UPROPERTY(EditAnywhere, Category="Inventory")
+	UCapsuleComponent* InteractionCapsule;
+
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory")
 	UInventoryComponent* InventoryComponent;
@@ -84,6 +88,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Inventory")
 	void TryPickupItem();
+
+	UFUNCTION()
+	void OnInteractionCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 private:
 	float MaxSpeed;
