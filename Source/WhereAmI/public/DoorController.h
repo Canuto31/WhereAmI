@@ -14,8 +14,8 @@ UCLASS()
 class WHEREAMI_API ADoorController : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	ADoorController();
 
 protected:
@@ -33,12 +33,23 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category="Door")
 	bool bIsLocked = false;
 
-public:	
+	UPROPERTY()
+	AActor* OverlappingPlayer;
+
+public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                    int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp,
+	                  AActor* OtherActor,
+	                  UPrimitiveComponent* OtherComp,
+	                  int32 OtherBodyIndex);
 
 	void HandleDoorTransition(AActor* PlayerActor);
 
+	void TryInteract();
 };

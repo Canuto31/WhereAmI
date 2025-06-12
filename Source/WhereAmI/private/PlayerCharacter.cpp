@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "DoorController.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerStart.h"
 
@@ -95,6 +96,10 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		// Rotate
 		EnhancedInputComponent->BindAction(RotateAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Rotate);
+
+		// Interact
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Interact);
+
 	}
 	else
 	{
@@ -163,5 +168,13 @@ void APlayerCharacter::Rotate(const FInputActionValue& Value)
 
 		SetActorRotation(NewRotation);
 		FixedRotation = NewRotation;
+	}
+}
+
+void APlayerCharacter::Interact(const FInputActionValue& Value)
+{
+	if (CurrentDoor)
+	{
+		CurrentDoor->TryInteract();
 	}
 }

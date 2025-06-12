@@ -32,6 +32,9 @@ class WHEREAMI_API APlayerCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* RotateAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* InteractAction;
+
 	/*Camera*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
@@ -42,6 +45,9 @@ class WHEREAMI_API APlayerCharacter : public ACharacter
 public:
 	APlayerCharacter();
 
+	UPROPERTY()
+	class ADoorController* CurrentDoor;
+	
 protected:
 	virtual void BeginPlay() override;
 
@@ -54,6 +60,7 @@ protected:
 	void Run(const FInputActionValue& Value);
 	void StopRun(const FInputActionValue& Value);
 	void Rotate(const FInputActionValue& Value);
+	void Interact(const FInputActionValue& Value);
 
 public:	
 	virtual void Tick(float DeltaTime) override;

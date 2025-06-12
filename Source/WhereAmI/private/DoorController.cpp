@@ -2,6 +2,7 @@
 
 #include "DoorController.h"
 
+#include "PlayerCharacter.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/Character.h"
@@ -31,6 +32,7 @@ void ADoorController::BeginPlay()
 	Super::BeginPlay();
 
 	InteractionBox->OnComponentBeginOverlap.AddDynamic(this, &ADoorController::OnOverlapBegin);
+	InteractionBox->OnComponentEndOverlap.AddDynamic(this, &ADoorController::OnOverlapEnd);
 	
 }
 
@@ -43,9 +45,31 @@ void ADoorController::Tick(float DeltaTime)
 void ADoorController::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!bIsLocked && OtherActor && OtherActor->IsA<ACharacter>())
+	if (APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor))
 	{
-		HandleDoorTransition(OtherActor);
+		OverlappingPlayer = Player;
+		Player->CurrentDoor = this;
+	}
+}
+
+void ADoorController::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor))
+	{
+		if (Player->CurrentDoor == this)
+		{
+			Player->CurrentDoor = nullptr;
+		}
+		OverlappingPlayer = nullptr;
+	}
+}
+
+void ADoorController::TryInteract()
+{
+	if (!bIsLocked && OverlappingPlayer)
+	{
+		HandleDoorTransition(OverlappingPlayer);
 	}
 }
 

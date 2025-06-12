@@ -1,0 +1,14 @@
+{
+	"version": 1,
+	"changelists": [
+		{
+			"guid": "00000000000000000000000000000000",
+			"description": "Default Uncontrolled Changelist",
+			"files": [
+				"D:/Projects/Unreal/5.5/WhereAmI/Content/Blueprints/Character/Input/Actions/IA_Door.uasset",
+				"D:/Projects/Unreal/5.5/WhereAmI/Content/Blueprints/Character/Input/IMC_Character.uasset",
+				"D:/Projects/Unreal/5.5/WhereAmI/Content/Blueprints/Character/Input/Actions/IA_Interact.uasset"
+			]
+		}
+	]
+}
