@@ -52,4 +52,9 @@ public:
 	void HandleDoorTransition(AActor* PlayerActor);
 
 	void TryInteract();
+	
+	FTimerHandle FadeTimerHandle;
+
+	void StartFadeAndTeleport();
+	void FinishTeleport();
 };

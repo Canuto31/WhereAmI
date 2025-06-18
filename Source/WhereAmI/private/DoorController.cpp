@@ -2,6 +2,7 @@
 
 #include "DoorController.h"
 
+#include "TimerManager.h"
 #include "PlayerCharacter.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -83,4 +84,6 @@ void ADoorController::HandleDoorTransition(AActor* PlayerActor)
 		PlayerActor->SetActorLocationAndRotation(NewLocation, NewRotation);
 	}
 }
+
+
 
