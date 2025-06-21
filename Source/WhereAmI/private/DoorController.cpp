@@ -1,11 +1,15 @@
 
 
 #include "DoorController.h"
-
+#include "PlayerCharacter.h"
+#include "FadeWidgetController.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "GameFramework/Character.h"
+#include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/Character.h"
+#include "TimerManager.h"
+
 
 ADoorController::ADoorController()
 {
@@ -31,6 +35,7 @@ void ADoorController::BeginPlay()
 	Super::BeginPlay();
 
 	InteractionBox->OnComponentBeginOverlap.AddDynamic(this, &ADoorController::OnOverlapBegin);
+	InteractionBox->OnComponentEndOverlap.AddDynamic(this, &ADoorController::OnOverlapEnd);
 	
 }
 
@@ -43,13 +48,65 @@ void ADoorController::Tick(float DeltaTime)
 void ADoorController::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!bIsLocked && OtherActor && OtherActor->IsA<ACharacter>())
+	if (APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor))
 	{
-		HandleDoorTransition(OtherActor);
+		OverlappingPlayer = Player;
+		Player->CurrentDoor = this;
 	}
 }
 
-void ADoorController::HandleDoorTransition(AActor* PlayerActor)
+void ADoorController::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor))
+	{
+		if (Player->CurrentDoor == this)
+		{
+			Player->CurrentDoor = nullptr;
+		}
+		OverlappingPlayer = nullptr;
+	}
+}
+
+void ADoorController::TryInteract()
+{
+	if (!bIsLocked && OverlappingPlayer)
+	{
+		StartFadeAndTeleport();
+		//HandleDoorTransition(OverlappingPlayer);
+	}
+}
+
+void ADoorController::StartFadeAndTeleport()
+{
+	if (!FadeWidgetClass || !OverlappingPlayer) return;
+
+	APlayerController* PC = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if (!PC) return;
+
+	ActiveFadeWidget = CreateWidget<UFadeWidgetController>(PC, FadeWidgetClass);
+	if (!ActiveFadeWidget) return;
+
+	ActiveFadeWidget->AddToViewport();
+	ActiveFadeWidget->PlayFadeAnimation();
+
+	GetWorld()->GetTimerManager().SetTimer(FadeTimerHandle, this, &ADoorController::FinishTeleport, 1.3f, false);
+}
+
+void ADoorController::FinishTeleport()
+{
+	if (!OverlappingPlayer || !TeleportTarget) return;
+
+	HandleDoorTransition(OverlappingPlayer);
+
+	if (ActiveFadeWidget)
+	{
+		ActiveFadeWidget->RemoveFromParent();
+		ActiveFadeWidget = nullptr;
+	}
+}
+
+/*void ADoorController::HandleDoorTransition(AActor* PlayerActor)
 {
 	if (TeleportTarget && PlayerActor)
 	{
@@ -58,5 +115,7 @@ void ADoorController::HandleDoorTransition(AActor* PlayerActor)
 		
 		PlayerActor->SetActorLocationAndRotation(NewLocation, NewRotation);
 	}
-}
+}*/
+
+
 

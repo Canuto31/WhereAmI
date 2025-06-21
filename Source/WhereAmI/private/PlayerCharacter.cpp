@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "DoorController.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerStart.h"
 
@@ -95,6 +96,10 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		// Rotate
 		EnhancedInputComponent->BindAction(RotateAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Rotate);
+
+		// Interact
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Interact);
+
 	}
 	else
 	{
@@ -105,7 +110,6 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
-	UE_LOG(LogTemp, Warning, TEXT("MovementVector: %f"), MovementVector.Y);
 
 	if (Controller != nullptr && MovementVector.Y != 0.0f)
 	{
@@ -135,13 +139,11 @@ void APlayerCharacter::StopMove()
 
 void APlayerCharacter::Run(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Shift is being held down."));
 	GetCharacterMovement()->MaxWalkSpeed = 500.0f;
 }
 
 void APlayerCharacter::StopRun(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Shift has been released."));
 	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 }
 
@@ -163,5 +165,15 @@ void APlayerCharacter::Rotate(const FInputActionValue& Value)
 
 		SetActorRotation(NewRotation);
 		FixedRotation = NewRotation;
+	}
+}
+
+void APlayerCharacter::Interact(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("E is pressed."));
+	if (CurrentDoor)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("In CurrentDoor"));
+		CurrentDoor->TryInteract();
 	}
 }
