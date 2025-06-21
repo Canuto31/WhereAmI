@@ -6,9 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "FadeWidgetController.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class WHEREAMI_API UFadeWidgetController : public UUserWidget
 {
@@ -23,4 +20,10 @@ protected:
 
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	UWidgetAnimation* FadeInOUT;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	UWidgetAnimation* FadeIn;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	UWidgetAnimation* FadeOut;
 };

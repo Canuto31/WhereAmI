@@ -9,6 +9,8 @@
 class UStaticMeshComponent;
 class UBoxComponent;
 class USceneComponent;
+class UFadeWidgetController;
+class UUserWidget;
 
 UCLASS()
 class WHEREAMI_API ADoorController : public AActor
@@ -36,6 +38,14 @@ protected:
 	UPROPERTY()
 	AActor* OverlappingPlayer;
 
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> FadeWidgetClass;
+
+	UPROPERTY()
+	UFadeWidgetController* ActiveFadeWidget;
+
+	FTimerHandle FadeTimerHandle;
+
 public:
 	virtual void Tick(float DeltaTime) override;
 
@@ -52,8 +62,6 @@ public:
 	void HandleDoorTransition(AActor* PlayerActor);
 
 	void TryInteract();
-	
-	FTimerHandle FadeTimerHandle;
 
 	void StartFadeAndTeleport();
 	void FinishTeleport();
